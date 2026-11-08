@@ -1,21 +1,19 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0-alpha1
 
-- Tracks every character's rested XP (keyed by character GUID, so Forever's
-  rulesets and family names are handled), snapshotting at logout and whenever
-  rested, XP, level, resting state or zone change.
-- `/rested` window: one row per character with logout zone, inn/world marker,
-  rested bubbles and bar, and time until full; tooltip with exact numbers;
-  right-click for Well Rested rank, don't track, forget.
-- Settings in Options › AddOns › RestedAlts (and a "This character" sub-page).
-- Login summary of full and filling-soon characters; logout warning outside
-  rested areas; minimap button.
-- The character you are playing is pinned to the top of the window, highlighted
-  and divided from the alts, and kept out of the sort.
-- Well Rested rank is auto-detected from the talent's description (its % is the
-  current rank's bonus); a rank set by hand still wins.
-- Logout no longer overwrites XP data: the client reports 0 XP-to-level at
-  logout, which made characters show as max level.
-- Debug: each login logs predicted vs actual rested XP and what the game reports
-  about the Well Rested talent (`/rested log`, `/rested probe`).
+First alpha, for WoW Forever 1.60.1.
+
+- Tracks rested XP for every character on the account, across all Forever
+  rulesets, shown by full name ("First Family").
+- `/rested` window (or the minimap button): one row per character with where it
+  logged out (inn / city or world), rested bubbles and bar, and time until full.
+  The character you're playing is pinned at the top. Max-level characters are
+  dimmed at the bottom or hidden.
+- Row tooltip with exact numbers; right-click a row to set its Well Rested rank,
+  stop tracking it, or forget it.
+- Well Rested (Legacy talent) rank is detected automatically, with a manual
+  override per character.
+- Login summary of alts that are full or filling soon, and a warning when you
+  log out outside an inn or city.
+- Settings in Options → AddOns → RestedAlts, with a "This character" page.

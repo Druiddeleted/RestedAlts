@@ -105,7 +105,7 @@ local function showTooltip(row)
     if not e then return end
     local c, p, now = e.c, e.p, time()
     GameTooltip:SetOwner(row, "ANCHOR_RIGHT")
-    GameTooltip:AddLine(NS.ColoredName(c) .. (c.family and (" " .. c.family) or ""))
+    GameTooltip:AddLine(NS.ColoredName(c))
     GameTooltip:AddLine(string.format("Level %d %s · %s", c.level or 0, className(c.class),
         c.ruleset or "?"), 0.64, 0.61, 0.56)
     if p.maxLevel then
@@ -148,7 +148,7 @@ local function showTooltip(row)
     else rankText = "not detected — assumed 0" end
     GameTooltip:AddDoubleLine("Well Rested", rankText,
         0.64, 0.61, 0.56, 1, 1, 1)
-    local m = c.lastMeasure
+    local m = NS.DEV and c.lastMeasure
     if m then
         GameTooltip:AddLine(" ")
         GameTooltip:AddLine("Measured on last login", 0.64, 0.61, 0.56)
@@ -170,7 +170,7 @@ local function openMenu(row)
     if not (e and MenuUtil and MenuUtil.CreateContextMenu) then return end
     local c = e.c
     MenuUtil.CreateContextMenu(row, function(_, root)
-        root:CreateTitle(c.name or "?")
+        root:CreateTitle(NS.FullName(c))
         local rank = root:CreateButton("Well Rested rank")
         local function isRank(v) return c.rankManual == v end
         local function setRank(v)
@@ -223,8 +223,10 @@ local function makeRow(i)
     row.divider:SetPoint("BOTTOMLEFT"); row.divider:SetPoint("BOTTOMRIGHT"); row.divider:SetHeight(2)
 
     row.name = text(row, "GameFontNormal")
-    row.name:SetPoint("LEFT", COL.name, 0)
     row.name:SetWidth(COL.level - COL.name - 8)
+    row.nameSub = text(row, "GameFontDisableSmall")
+    row.nameSub:SetPoint("BOTTOMLEFT", COL.name, 7)
+    row.nameSub:SetWidth(COL.level - COL.name - 8)
     row.level = text(row, "GameFontHighlight")
     row.level:SetPoint("LEFT", COL.level, 0)
     row.zone = text(row, "GameFontHighlightSmall")
@@ -377,10 +379,19 @@ end
 local function paintRow(row, e, showRuleset, now)
     local c, p = e.c, e.p
     row.entry = e
-    local name = NS.ColoredName(c)
-    if showRuleset and c.ruleset then name = name .. " " .. paint(c.ruleset, C.dim) end
-    if e.current then name = name .. " " .. paint("(playing)", C.dim) end
-    row.name:SetText(name)
+    -- Full name on top; ruleset and "playing now" go on the line under it.
+    row.name:SetText(NS.ColoredName(c))
+    local sub = {}
+    if showRuleset and c.ruleset then sub[#sub + 1] = c.ruleset end
+    if e.current then sub[#sub + 1] = "playing now" end
+    row.name:ClearAllPoints()
+    if #sub > 0 then
+        row.name:SetPoint("TOPLEFT", COL.name, -7)
+        row.nameSub:SetText(table.concat(sub, " · "))
+    else
+        row.name:SetPoint("LEFT", COL.name, 0)
+        row.nameSub:SetText("")
+    end
     row.level:SetText(c.level or "?")
     row.zone:SetText(c.zone or "?")
     if c.resting then
@@ -453,7 +464,7 @@ function UI.Refresh()
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", 2, y)
         row.entry = e
-        row.name:SetText((e.c.name or "?") .. ((showRuleset and e.c.ruleset) and (" " .. e.c.ruleset) or ""))
+        row.name:SetText(NS.FullName(e.c) .. ((showRuleset and e.c.ruleset) and (" · " .. e.c.ruleset) or ""))
         row.level:SetText(e.c.level or "?")
         row.note:SetText("max level")
         row:Show()

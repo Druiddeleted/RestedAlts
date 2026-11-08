@@ -1,5 +1,11 @@
 local _, NS = ...
 
+-- Dev build flag. The BigWigs packager comments out @debug@ blocks, so a
+-- CurseForge zip has NS.DEV = nil; a ./sync'd checkout has it true.
+--@debug@
+NS.DEV = true
+--@end-debug@
+
 -- Owns the saved-variable schema. Everything else reads and writes through here.
 --
 -- RestedAltsDB (account-wide):
@@ -35,7 +41,12 @@ end
 
 function DB.Init()
     if type(RestedAltsDB) ~= "table" then RestedAltsDB = {} end
-    if type(RestedAltsLog) ~= "table" then RestedAltsLog = {} end
+    -- Production builds never write the diagnostic log; drop any left over.
+    if NS.DEV then
+        if type(RestedAltsLog) ~= "table" then RestedAltsLog = {} end
+    else
+        RestedAltsLog = nil
+    end
     local db = RestedAltsDB
     db.version = db.version or SCHEMA
     db.chars = db.chars or {}
@@ -69,7 +80,13 @@ end
 
 function DB.Forget(guid) RestedAltsDB.chars[guid] = nil end
 
+-- Diagnostics are dev-build only: measurements, probes, logout lines.
+function DB.Recording()
+    return NS.DEV and DB.Get("recordMeasurements") and true or false
+end
+
 function DB.Log(fmt, ...)
+    if not NS.DEV then return end
     local line = select("#", ...) > 0 and string.format(fmt, ...) or fmt
     local log = RestedAltsLog
     log[#log + 1] = date("%Y-%m-%d %H:%M:%S ") .. line
@@ -80,4 +97,4 @@ function DB.Log(fmt, ...)
     end
 end
 
-function DB.ClearLog() wipe(RestedAltsLog) end
+function DB.ClearLog() if RestedAltsLog then wipe(RestedAltsLog) end end

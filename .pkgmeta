@@ -6,6 +6,7 @@ ignore:
   - .pkgmeta
   - CLAUDE.md
   - docs
+  - curseforge
   - scripts
   - README.md
   - "*.psd"

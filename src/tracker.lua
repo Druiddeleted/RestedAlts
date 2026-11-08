@@ -47,10 +47,17 @@ function T.GUID() return guid end
 function T.Current() return DB.Char(guid) end
 function T.IsCurrent(g) return g == guid end
 
--- Class-coloured first name.
+-- Forever names are "First Family" (UnitName's 2nd value is the family name).
+function NS.FullName(c)
+    local name = c.name or "?"
+    if c.family and c.family ~= "" then name = name .. " " .. c.family end
+    return name
+end
+
+-- Class-coloured full name.
 function NS.ColoredName(c)
     local color = c.class and RAID_CLASS_COLORS and RAID_CLASS_COLORS[c.class]
-    local name = c.name or "?"
+    local name = NS.FullName(c)
     if color and color.colorStr then return "|c" .. color.colorStr .. name .. "|r" end
     return name
 end
@@ -83,7 +90,7 @@ function T.Snapshot(reason)
         -- At a real logout UnitXPMax (and possibly the rest) already read 0, so
         -- trust the event-driven snapshots for the values and only stamp the time.
         c.ts = time()
-        if DB.Get("recordMeasurements") then
+        if DB.Recording() then
             local l = live()
             DB.Log("logout %s: L%d rested %s/%s (%.1f%% of a level) %s in %s, rank %s [at logout the API said rested %s/%s, resting %s]",
                 c.name or "?", c.level or 0, R.CommaNumber(c.rested), R.CommaNumber(c.xpMax),
@@ -181,11 +188,11 @@ end
 function T.Login()
     guid = UnitGUID("player")
     local prev = DB.Char(guid)
-    if prev and DB.Get("recordMeasurements") then
+    if prev and DB.Recording() then
         local o = R.Observe(prev, live(), time())
         if o then logObservation(prev, o) end
     end
-    if DB.Get("recordMeasurements") then T.ProbeWellRested("login") end
+    if DB.Recording() then T.ProbeWellRested("login") end
     ready = true
     T.Snapshot("login")
 end

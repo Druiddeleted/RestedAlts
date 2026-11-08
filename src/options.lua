@@ -122,9 +122,11 @@ function O.Register()
     toggle(category, "logoutWarn", "Logout warning",
         "When you start logging out outside an inn or city, say so: rested XP builds about 4x slower out in the world.")
 
-    header(layout, "Debug")
-    toggle(category, "recordMeasurements", "Record login measurements",
-        "Log predicted vs actual rested XP on each login, and what the game reports about Well Rested. Read with /rested log.")
+    if NS.DEV then
+        header(layout, "Debug")
+        toggle(category, "recordMeasurements", "Record login measurements",
+            "Log predicted vs actual rested XP on each login, and what the game reports about Well Rested. Read with /rested log.")
+    end
 
     Settings.RegisterAddOnCategory(category)
     O.category = category

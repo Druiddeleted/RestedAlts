@@ -5,18 +5,21 @@ local HELP = {
     "/rested — toggle the window",
     "/rested config — open settings",
     "/rested rank <0-5|auto> — this character's Well Rested rank (auto = detect)",
-    "/rested forget <name> — remove a character",
+    "/rested forget <name> — remove a character (first or full name)",
     "/rested summary — print the login summary now",
-    "/rested probe — log what the game reports (identity, Well Rested)",
-    "/rested log [n] — show the last n log lines (default 20)",
-    "/rested log clear — clear the log",
 }
+
+if NS.DEV then
+    HELP[#HELP + 1] = "/rested probe — log what the game reports (identity, Well Rested)"
+    HELP[#HELP + 1] = "/rested log [n] — show the last n log lines (default 20)"
+    HELP[#HELP + 1] = "/rested log clear — clear the log"
+end
 
 local function forget(name)
     name = name:lower()
     local hits = {}
     for g, c in pairs(DB.Chars()) do
-        if (c.name or ""):lower() == name then hits[#hits + 1] = g end
+        if (c.name or ""):lower() == name or NS.FullName(c):lower() == name then hits[#hits + 1] = g end
     end
     if #hits == 0 then return NS.Say("no character named " .. name) end
     if #hits > 1 then return NS.Say("more than one " .. name .. "; right-click its row in the window instead") end
@@ -54,11 +57,11 @@ SlashCmdList.RESTEDALTS = function(msg)
         forget(rest)
     elseif cmd == "summary" then
         T.LoginSummary()
-    elseif cmd == "probe" then
+    elseif cmd == "probe" and NS.DEV then
         T.ProbeIdentity()
         T.ProbeWellRested("probe")
         NS.Say("probe logged — /reload to write it to disk")
-    elseif cmd == "log" then
+    elseif cmd == "log" and NS.DEV then
         if rest == "clear" then
             DB.ClearLog()
             return NS.Say("log cleared")
