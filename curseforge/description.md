@@ -58,4 +58,4 @@ Two of the numbers aren't confirmed for Forever yet: the out-in-the-world rate, 
 - Estimates assume the character stayed logged out. Playing it on another PC or with another install isn't seen.
 - Nothing is uploaded. All data stays in your SavedVariables.
 
-**Status:** early alpha, for WoW Forever 1.60.1. Feedback and bug reports are welcome on [GitHub](https://github.com/Druiddeleted/RestedAlts/issues).
+Built for **WoW Forever 1.60.1**. Feedback and bug reports are welcome on [GitHub](https://github.com/Druiddeleted/RestedAlts/issues).
