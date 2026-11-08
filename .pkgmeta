@@ -1,0 +1,14 @@
+package-as: RestedAlts
+
+ignore:
+  - .github
+  - .gitignore
+  - .pkgmeta
+  - CLAUDE.md
+  - docs
+  - scripts
+  - README.md
+  - "*.psd"
+  - "*.xcf"
+
+manual-changelog: CHANGELOG.md

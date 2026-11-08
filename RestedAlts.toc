@@ -1,0 +1,21 @@
+## Interface: 16001
+## Title: RestedAlts
+## Notes: Tracks rested XP on your alts so you can play them before it caps.
+## Author: Druiddeleted
+## Version: 0.1.0
+## IconTexture: Interface\Icons\Spell_Nature_Sleep
+## SavedVariables: RestedAltsDB, RestedAltsLog
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\lib.xml
+
+src\rules.lua
+src\db.lua
+src\tracker.lua
+src\ui.lua
+src\options.lua
+src\minimap.lua
+src\commands.lua
+src\core.lua
