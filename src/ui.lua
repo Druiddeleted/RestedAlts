@@ -148,6 +148,12 @@ local function showTooltip(row)
     else rankText = "not detected — assumed 0" end
     GameTooltip:AddDoubleLine("Well Rested", rankText,
         0.64, 0.61, 0.56, 1, 1, 1)
+    -- Explain the "?" the row puts on Full in (see uncertain()).
+    if c.rank == nil then
+        GameTooltip:AddLine("? = estimate until you log in once to detect Well Rested", 0.64, 0.61, 0.56, true)
+    elseif not c.resting then
+        GameTooltip:AddLine("? = estimate: the out-of-inn rate is unconfirmed", 0.64, 0.61, 0.56, true)
+    end
     local m = NS.DEV and c.lastMeasure
     if m then
         GameTooltip:AddLine(" ")

@@ -4,7 +4,7 @@ local DB, R, T = NS.DB, NS.Rules, NS.Tracker
 local HELP = {
     "/rested — toggle the window",
     "/rested config — open settings",
-    "/rested rank <0-5|auto> — this character's Well Rested rank (auto = detect)",
+    "/rested rank [0-5||auto] — show or set this character's Well Rested rank (auto = detect)",
     "/rested forget <name> — remove a character (first or full name)",
     "/rested summary — print the login summary now",
 }
@@ -42,16 +42,20 @@ SlashCmdList.RESTEDALTS = function(msg)
         local v = rest:lower()
         local n = tonumber(v)
         if not c then return end
+        local function report()
+            NS.Say("Well Rested rank for " .. NS.ColoredName(c) .. ": " .. (c.rankManual and (tostring(c.rankManual) .. " (set by hand)") or ("auto (" .. tostring(c.rankDetected or "not detected") .. ")")))
+        end
+        if v == "" then return report() end
         if v == "auto" or v == "unknown" or v == "?" then
             c.rankManual = nil
         elseif n and n >= 0 and n <= R.MAX_RANK and n == math.floor(n) then
             c.rankManual = n
         else
-            return NS.Say("usage: /rested rank <0-" .. R.MAX_RANK .. "|auto>")
+            return NS.Say("usage: /rested rank [0-" .. R.MAX_RANK .. "||auto]")
         end
         T.ApplyRank(c)
         DB.Log("rank %s set to %s by hand", c.name or "?", tostring(c.rankManual))
-        NS.Say("Well Rested rank for " .. NS.ColoredName(c) .. ": " .. (c.rankManual and tostring(c.rankManual) or ("auto (" .. tostring(c.rankDetected or "not detected") .. ")")))
+        report()
         if NS.UI then NS.UI.Refresh() end
     elseif cmd == "forget" and rest ~= "" then
         forget(rest)

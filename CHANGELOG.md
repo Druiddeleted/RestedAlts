@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.1
+
+- Fixed: Well Rested was detected as rank 5 on every character, because the
+  game shows the top rank's description even at rank 0. Characters that don't
+  know the talent now read rank 0, and the wrong rank 5 is cleared on update
+  (each character re-detects the next time you log into it).
+- `/rested rank` with no argument shows this character's current rank, and its
+  usage text shows "auto" in full.
+- The row tooltip explains the "?" on Full in.
+
 ## 0.1.0
 
 First release, for WoW Forever 1.60.1.

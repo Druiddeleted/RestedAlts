@@ -17,7 +17,7 @@ NS.DEV = true
 local DB = {}
 NS.DB = DB
 
-local SCHEMA = 1
+local SCHEMA = 2
 local LOG_MAX = 1000
 
 DB.DEFAULTS = {
@@ -48,8 +48,16 @@ function DB.Init()
         RestedAltsLog = nil
     end
     local db = RestedAltsDB
-    db.version = db.version or SCHEMA
     db.chars = db.chars or {}
+    -- Schema 2: ranks detected before 0.1.1 read the top-rank description and
+    -- came out 5 on every character; drop them so the next login re-detects.
+    if (db.version or SCHEMA) < 2 then
+        for _, c in pairs(db.chars) do
+            c.rankDetected = nil
+            c.rank = c.rankManual
+        end
+    end
+    db.version = SCHEMA
     db.settings = db.settings or {}
     for k, v in pairs(DB.DEFAULTS) do
         if db.settings[k] == nil then db.settings[k] = copy(v) end

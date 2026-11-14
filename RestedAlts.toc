@@ -2,7 +2,7 @@
 ## Title: RestedAlts
 ## Notes: Tracks rested XP on your alts so you can play them before it caps.
 ## Author: Druiddeleted
-## Version: 0.1.0
+## Version: 0.1.1
 ## IconTexture: Interface\Icons\Spell_Nature_Sleep
 ## SavedVariables: RestedAltsDB, RestedAltsLog
 

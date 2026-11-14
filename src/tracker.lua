@@ -62,13 +62,17 @@ function NS.ColoredName(c)
     return name
 end
 
--- Well Rested's spell description carries the current rank's bonus ("accumulates
--- 20% faster" at rank 5) and is nil at rank 0 while the spell name still loads.
+-- Well Rested's spell description always reads at the top rank ("accumulates
+-- 20% faster"), even on a character with rank 0, so it cannot tell ranks apart
+-- (probe log, 2026-11-13). A character that doesn't know the spell has rank 0;
+-- only one that knows it falls back to reading the description.
 -- Returns the rank, or nil when the spell data isn't loaded yet.
 function T.DetectRank()
     if not C_Spell then return nil end
     local info = call(C_Spell.GetSpellInfo, T.WELL_RESTED)
     if not (info and info.name) then return nil end
+    local known = call(IsPlayerSpell, T.WELL_RESTED) or call(IsSpellKnownOrOverridesKnown, T.WELL_RESTED)
+    if not known then return 0 end
     local desc = call(C_Spell.GetSpellDescription, T.WELL_RESTED)
     if not desc or desc == "" then return 0 end
     local pct = tonumber(desc:match("(%d+)%%"))
